@@ -1,0 +1,483 @@
+{% extends "base.html" %}
+
+{% block title %}Página Inicial - Nome da Empresa{% endblock %}
+
+{% block content %}
+
+<style>
+ body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container, .carousel-container, .section {
+    width: 100%; /* Define a largura completa */
+    padding: 0 15px; /* Ajusta o preenchimento para evitar bordas abruptas */
+    box-sizing: border-box; /* Inclui o padding na largura total */
+}
+
+
+.neon-line {
+    height: 4px;
+    background-color: #39ff14; /* Verde neon */
+    margin-bottom: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border-radius: 15px;
+    background-color: #222; /* Fundo do card */
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.7);
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card img {
+    object-fit: cover;
+    height: 150px;
+    width: 100%;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.btn-neon {
+    background-color: #39ff14;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.btn-neon:hover {
+    background-color: #32cd12;
+    box-shadow: 0 0 10px #39ff14;
+}
+
+.benefit-box,
+.step-box,
+.testimonial-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #111;
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.benefit-box h4,
+.step-box h4,
+.testimonial-box h4 {
+    margin-bottom: 15px;
+    color: #39ff14;
+}
+
+.text-neon {
+    color: #39ff14;
+}
+
+.carousel-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.carousel-track {
+    display: flex;
+    animation: scroll 60s linear infinite;
+    width: 200%; /* Aumenta a largura para garantir a continuidade */
+}
+
+.carousel-item {
+    flex: 0 0 auto;
+    width: 300px;
+    margin-right: 15px;
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%); /* Ajustar para metade para manter o loop contínuo */
+    }
+}
+
+.carousel-inner .carousel-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Garante que os itens do carrossel ocupem toda a altura */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(100%); /* Torna os ícones brancos para maior visibilidade */
+}
+
+.table-dark th,
+.table-dark td {
+    border: 1px solid #39ff14; /* Bordas neon para a tabela */
+}
+
+.footer {
+    background-color: #111;
+    color: #39ff14;
+    padding: 15px;
+    border-top: 4px solid #39ff14;
+}
+
+.card-neon {
+    background-color: #222;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-neon:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.7);
+}
+
+.card-title {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.card-text {
+    margin-bottom: 15px;
+    color: #a1ff80; /* Verde suave que combina com o tema */
+
+}
+
+.carousel-track:hover {
+    animation-play-state: paused; /* Pausa a animação quando o mouse está sobre o carrossel */
+}
+
+.carousel-track {
+    animation: scroll 30s linear infinite; /* Define a animação contínua */
+}
+
+.carousel-container {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.carousel-item {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+</style>
+
+<section class="mt-5">
+    <div class="carousel-container">
+        <div class="carousel-track">
+            <!-- Itens do carrossel -->
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/project_management.jpg" class="card-img-top" alt="Gerenciamento de Projetos">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Gerenciamento de Projetos</h5>
+                        <p class="card-text">Organize suas tarefas e acompanhe o progresso.</p>
+                        <a href="{{ url_for('main.gerenciamentodeprojetos') }}" class="btn btn-neon">Ver detalhes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service1.jpg" class="card-img-top" alt="Sistema de Agendamento">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Sistema de Agendamento</h5>
+                        <p class="card-text">Gerencie seus compromissos de forma fácil.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service2.jpg" class="card-img-top" alt="Gestão de Finanças">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Gestão de Finanças</h5>
+                        <p class="card-text">Controle financeiro detalhado.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service3.jpg" class="card-img-top" alt="Sistema de Estoque">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Sistema de Estoque</h5>
+                        <p class="card-text">Gerencie seu estoque em tempo real.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service4.jpg" class="card-img-top" alt="CRM para Vendas">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">CRM para Vendas</h5>
+                        <p class="card-text">Melhore o relacionamento com seus clientes.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service5.jpg" class="card-img-top" alt="Portal de Treinamentos">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Portal de Treinamentos</h5>
+                        <p class="card-text">Ofereça treinamentos para sua equipe.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duplicação dos itens para o loop contínuo -->
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service1.jpg" class="card-img-top" alt="Sistema de Agendamento">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Sistema de Agendamento</h5>
+                        <p class="card-text">Gerencie seus compromissos de forma fácil.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service2.jpg" class="card-img-top" alt="Gestão de Finanças">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Gestão de Finanças</h5>
+                        <p class="card-text">Controle financeiro detalhado.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service3.jpg" class="card-img-top" alt="Sistema de Estoque">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Sistema de Estoque</h5>
+                        <p class="card-text">Gerencie seu estoque em tempo real.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service4.jpg" class="card-img-top" alt="CRM para Vendas">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">CRM para Vendas</h5>
+                        <p class="card-text">Melhore o relacionamento com seus clientes.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="card card-neon">
+                    <img src="/static/img/service5.jpg" class="card-img-top" alt="Portal de Treinamentos">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-neon">Portal de Treinamentos</h5>
+                        <p class="card-text">Ofereça treinamentos para sua equipe.</p>
+                        <a href="#" class="btn btn-neon">Testar agora</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+<!-- Benefícios e Diferenciais -->
+<section class="mt-5 text-center">
+    <h2 class="text-neon mb-4">Benefícios e Diferenciais</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="benefit-box p-3">
+                <h4 class="text-neon">Fácil de usar</h4>
+                <p>Interface amigável e intuitiva.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="benefit-box p-3">
+                <h4 class="text-neon">Personalizável</h4>
+                <p>Funcionalidades sob demanda para atender às suas necessidades.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="benefit-box p-3">
+                <h4 class="text-neon">Segurança</h4>
+                <p>Proteja seus dados com as melhores práticas.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Personalização de Funcionalidades -->
+<section class="mt-5 text-center">
+    <h2 class="text-neon mb-4">Funcionalidades Personalizadas Sob Medida</h2>
+    <p>Oferecemos a possibilidade de personalizar nossos sistemas para atender às necessidades exclusivas da sua
+        empresa. Entre em contato e solicite uma funcionalidade sob medida.</p>
+    <a href="#" class="btn btn-neon mt-3">Solicitar Personalização</a>
+</section>
+
+<!-- Seção "Como Funciona?" -->
+<section class="mt-5">
+    <h2 class="text-neon text-center mb-4">Como Funciona?</h2>
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="step-box p-3 text-center">
+                <h4 class="text-neon">1. Cadastro Rápido</h4>
+                <p>Cadastre-se em poucos minutos e acesse nossa plataforma.</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="step-box p-3 text-center">
+                <h4 class="text-neon">2. Explore Nossos Serviços</h4>
+                <p>Navegue pelo nosso catálogo e escolha os sistemas que atendem suas necessidades.</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="step-box p-3 text-center">
+                <h4 class="text-neon">3. Personalize Sua Experiência</h4>
+                <p>Solicite funcionalidades adicionais para adaptar nossos sistemas ao seu negócio.</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="step-box p-3 text-center">
+                <h4 class="text-neon">4. Gerencie com Facilidade</h4>
+                <p>Acesse seu painel e acompanhe o progresso de suas operações.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Preços e Planos -->
+<section class="mt-5 text-center">
+    <h2 class="text-neon mb-4">Preços e Planos</h2>
+    <div class="row">
+        <!-- Card do Plano Básico -->
+        <div class="col-md-4 mb-4">
+            <div class="card card-neon p-3">
+                <div class="card-body">
+                    <h3 class="card-title text-neon">Básico</h3>
+                    <p class="card-text">Acesso a funcionalidades essenciais.</p>
+                    <p class="card-text"><strong>$29/mês</strong></p>
+                    <a href="#" class="btn btn-neon">Ver Detalhes</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card do Plano Avançado -->
+        <div class="col-md-4 mb-4">
+            <div class="card card-neon p-3">
+                <div class="card-body">
+                    <h3 class="card-title text-neon">Avançado</h3>
+                    <p class="card-text">Funcionalidades avançadas e suporte dedicado.</p>
+                    <p class="card-text"><strong>$49/mês</strong></p>
+                    <a href="#" class="btn btn-neon">Ver Detalhes</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card do Plano Premium -->
+        <div class="col-md-4 mb-4">
+            <div class="card card-neon p-3">
+                <div class="card-body">
+                    <h3 class="card-title text-neon">Premium</h3>
+                    <p class="card-text">Todos os recursos e personalização incluída.</p>
+                    <p class="card-text"><strong>$99/mês</strong></p>
+                    <a href="#" class="btn btn-neon">Ver Detalhes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Seção de Depoimentos -->
+<section class="mt-5">
+    <h2 class="text-neon text-center mb-4">Depoimentos de Clientes</h2>
+    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="testimonial-box p-3 text-center">
+                    <p>"O sistema de agendamento revolucionou a maneira como gerimos nossos compromissos!"</p>
+                    <h5>- Cliente A, Empresa X</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="testimonial-box p-3 text-center">
+                    <p>"A personalização sob demanda foi um divisor de águas para o nosso negócio."</p>
+                    <h5>- Cliente B, Empresa Y</h5>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
+    </div>
+</section>
+{% endblock %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const carouselTrack = document.getElementById('carouselTrack');
+        
+        if (carouselTrack) {
+            // Adiciona evento para pausar a animação ao passar o mouse
+            carouselTrack.addEventListener('mouseenter', () => {
+                carouselTrack.style.animationPlayState = 'paused';
+            });
+
+            // Retoma a animação quando o mouse sai
+            carouselTrack.addEventListener('mouseleave', () => {
+                carouselTrack.style.animationPlayState = 'running';
+            });
+        }
+    });
+</script>

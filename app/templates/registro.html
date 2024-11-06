@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="SEU_CLIENT_ID_DO_GOOGLE">
+    
+</head>
+<body>
+    <div class="container">
+        <img src="/static/STYLEFY.png" alt="Logo" class="logo">
+        <form action="/registro" method="post">
+            <h2>Registro</h2>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+            <div class="form-group">
+                <label for="username">Nome de usuário:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="firstname">Nome:</label>
+                <input type="text" id="firstname" name="firstname" required>
+            </div>
+            <div class="form-group">
+                <label for="lastname">Sobrenome:</label>
+                <input type="text" id="lastname" name="lastname" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Data de Nascimento:</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirmar Senha:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit">Registrar</button>
+        </form>
+
+        <!-- Botão de login do Google -->
+        <div class="g-signin2" data-onsuccess="onSignIn" data-clientid="SEU_CLIENT_ID_DO_GOOGLE"></div>
+    </div>
+
+
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var id_token = googleUser.getAuthResponse().id_token;
+            var username = profile.getName();
+            var email = profile.getEmail();
+
+            // Aqui você pode enviar os dados para o servidor para realizar o registro
+            // Você pode usar uma requisição AJAX ou um formulário oculto para enviar os dados para o servidor
+            // Exemplo de envio com AJAX:
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/registro_google",
+            //     data: { username: username, email: email, id_token: id_token },
+            //     success: function(response) {
+            //         // Tratar a resposta do servidor, como redirecionar para uma página de perfil
+            //     }
+            // });
+        }
+    </script>
+</body>
+</html>

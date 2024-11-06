@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciamento de Projetos{% endblock %}
+
+{% block content %}
+<h1 class="text-center text-neon mt-5">Gerenciamento de Projetos</h1>
+<div class="board-wrapper">
+    <div class="create-column-container">
+        <button class="create-column-btn" onclick="createTemporaryColumn()"><i class="fas fa-plus"></i></button>
+    </div>
+    <div class="board-container" id="boardContainer">
+        <!-- O conteúdo das colunas será renderizado aqui -->
+    </div>
+</div>
+
+<script>
+    let isCreatingColumn = false; // Variável de controle para evitar múltiplas criações simultâneas
+
+    function createTemporaryColumn() {
+        if (isCreatingColumn) return; // Impede criar outra coluna sem nomear a atual
+
+        const boardContainer = document.getElementById('boardContainer');
+
+        // Criação da nova coluna com a caixa de entrada de texto
+        const newColumn = document.createElement('div');
+        newColumn.classList.add('column');
+        newColumn.style.backgroundColor = '#b0b0b0'; // Cor padrão cinza
+        newColumn.innerHTML = `
+            <div class="column-header">
+                <div class="input-container">
+                    <input type="text" class="column-name-input" placeholder="Digite o nome da nova coluna" onkeypress="checkEnterKey(event, this)">
+                    <button class="confirm-column-btn" onclick="confirmColumn(this)"><i class="fas fa-check"></i></button>
+                </div>
+            </div>
+            <div class="task-list"></div>
+            <button class="add-task-btn" onclick="showTaskInput(this)" style="display: none;"><i class="fas fa-plus"></i></button>
+        `;
+
+        // Adiciona a nova coluna ao final do board-container
+        boardContainer.appendChild(newColumn);
+        newColumn.querySelector('.column-name-input').focus(); // Focar no input
+
+        // Adiciona animação de entrada à coluna
+        requestAnimationFrame(() => {
+            newColumn.classList.add('slide-in');
+        });
+
+        isCreatingColumn = true; // Define que uma coluna está em criação
+    }
+
+    function confirmColumn(button) {
+        const columnHeader = button.closest('.column-header');
+        const input = columnHeader.querySelector('.column-name-input');
+        const columnName = input.value.trim();
+
+        if (columnName) {
+            columnHeader.innerHTML = `
+                ${columnName}
+                <div class="menu-icon" onclick="toggleMenu(this)">
+                    &#x22EE;
+                </div>
+                <div class="menu-options">
+                    <div class="color-options">
+                        <button class="color-btn" style="background-color: #FF5733;" onclick="setColor(this)"></button>
+                        <button class="color-btn" style="background-color: #33FF57;" onclick="setColor(this)"></button>
+                        <button class="color-btn" style="background-color: #3357FF;" onclick="setColor(this)"></button>
+                        <button class="color-btn" style="background-color: #FF33A6;" onclick="setColor(this)"></button>
+                        <button class="color-btn" style="background-color: #FFC300;" onclick="setColor(this)"></button>
+                    </div>
+                    <button onclick="renameColumn(this)"><i class="fas fa-paint-brush"></i> Renomear</button>
+                    <div class="submenu">
+                        <button class="submenu-btn">Ordenar por</button>
+                        <div class="submenu-options">
+                            <button onclick="sortTasks(this, 'recent')" class="sort-option active">Mais Recentes</button>
+                            <button onclick="sortTasks(this, 'old')" class="sort-option">Mais Antigos</button>
+                            <button onclick="sortTasks(this, 'alphabetical')" class="sort-option">Alfabeticamente</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Exibe o botão de criação de tarefas após a confirmação do nome da coluna
+            const column = columnHeader.closest('.column');
+            column.querySelector('.add-task-btn').style.display = 'block';
+
+            isCreatingColumn = false; // Libera a criação de outra coluna
+        }
+    }
+
+    function checkEnterKey(event, input) {
+        if (event.key === 'Enter') {
+            confirmColumn(input.nextElementSibling);
+        }
+    }
+
+    function showTaskInput(button) {
+        const taskList = button.previousElementSibling;
+
+        if (taskList.querySelector('.task-input')) {
+            return; // Evita múltiplos campos de entrada
+        }
+
+        const inputContainer = document.createElement('div');
+        inputContainer.classList.add('task-input-container');
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Digite o nome da tarefa';
+        input.classList.add('task-input');
+
+        const confirmButton = document.createElement('button');
+        confirmButton.classList.add('confirm-task-btn');
+        confirmButton.innerHTML = '<i class="fas fa-check"></i>';
+
+        confirmButton.onclick = function () {
+            if (input.value.trim() !== '') {
+                const task = document.createElement('div');
+                task.classList.add('task');
+                task.textContent = input.value.trim();
+                task.dataset.timestamp = Date.now();
+                taskList.appendChild(task);
+                inputContainer.remove();
+                button.innerHTML = '<i class="fas fa-plus"></i>';
+            }
+        };
+
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && input.value.trim() !== '') {
+                confirmButton.click();
+            }
+        });
+
+        inputContainer.appendChild(input);
+        inputContainer.appendChild(confirmButton);
+        taskList.appendChild(inputContainer);
+        input.focus();
+        button.innerHTML = '';
+    }
+
+    function toggleMenu(icon) {
+        const menu = icon.nextElementSibling;
+        if (menu.style.display === 'block') {
+            menu.style.display = 'none';
+        } else {
+            document.querySelectorAll('.menu-options').forEach(m => m.style.display = 'none'); // Fecha menus abertos
+            menu.style.display = 'block';
+        }
+    }
+
+    function setColor(button) {
+        const column = button.closest('.column');
+        column.style.backgroundColor = button.style.backgroundColor;
+    }
+
+    function renameColumn(button) {
+        const columnHeader = button.closest('.column-header');
+        const newName = prompt('Digite o novo nome da coluna:');
+        if (newName) {
+            columnHeader.childNodes[0].textContent = newName;
+        }
+    }
+
+    function sortTasks(button, order) {
+        const column = button.closest('.column');
+        const taskList = column.querySelector('.task-list');
+        const tasks = Array.from(taskList.children).filter(child => !child.classList.contains('task-input'));
+
+        if (order === 'recent') {
+            tasks.sort((a, b) => b.dataset.timestamp - a.dataset.timestamp);
+        } else if (order === 'old') {
+            tasks.sort((a, b) => a.dataset.timestamp - b.dataset.timestamp);
+        } else if (order === 'alphabetical') {
+            tasks.sort((a, b) => a.textContent.localeCompare(b.textContent));
+        }
+
+        tasks.forEach(task => taskList.appendChild(task));
+
+        button.parentElement.querySelectorAll('.sort-option').forEach(opt => opt.classList.remove('active'));
+        button.classList.add('active');
+    }
+</script>
+
+<style>
+    .board-wrapper {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .create-column-container {
+        flex-shrink: 0;
+        margin-right: 20px;
+        position: sticky;
+        margin-top: 20px;
+        left: 0;
+        top: 20px;
+    }
+
+    .board-container {
+        display: flex;
+        flex-grow: 1;
+        overflow-x: auto;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .column {
+        background-color: #b0b0b0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        position: relative;
+        opacity: 0;
+        transform: translateX(-100%);
+        transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    }
+
+    .slide-in {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .column-header {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+        position: relative;
+    }
+
+    .input-container, .task-input-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        width: 100%; /* Ajusta a largura para caber dentro da coluna */
+        box-sizing: border-box; /* Inclui padding e border dentro da largura */
+    }
+
+    .column-name-input, .task-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 1em;
+        height: 40px;
+    }
+
+    .confirm-column-btn, .confirm-task-btn {
+        background-color: #39ff14;
+        border: none;
+        border-radius: 5px;
+        padding: 0 15px;
+        cursor: pointer;
+        color: #000;
+        font-size: 1em;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .confirm-column-btn i, .confirm-task-btn i {
+        font-size: 1em;
+    }
+
+    .menu-icon {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+    }
+
+    .menu-options {
+        display: none;
+        background-color: #222;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        padding: 5px;
+        min-width: 150px;
+        position: absolute;
+    }
+
+    .color-options {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 10px;
+    }
+
+    .color-btn {
+        width: 20px;
+        height: 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+
+    .menu-options button {
+        background: none;
+        border: none;
+        color: #fff;
+        padding: 8px 12px;
+        text-align: left;
+        width: 100%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .menu-options button:hover {
+        background-color: #333;
+    }
+
+    .menu-options i {
+        margin-right: 5px;
+    }
+
+    .task-list {
+        margin-top: 10px;
+    }
+
+    .task {
+        background-color: #444;
+        color: #fff;
+        margin-bottom: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-task-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 1.5em;
+        color: #333;
+        display: none; /* Oculta por padrão */
+    }
+
+    .add-task-btn:hover {
+        color: #39ff14;
+    }
+
+    .create-column-btn {
+        background: none;
+        border: none;
+        border-radius: 50%;
+        padding: 15px;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #39ff14;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+
+    .create-column-btn:hover {
+        color: #32cd12;
+    }
+</style>
+
+<!-- Adicione o link para os ícones do Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+{% endblock %}

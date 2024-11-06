@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="container">
+        <form action="/login" method="post">
+            <h2>Login</h2>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Não tem uma conta? <a href="/registro">Cadastre-se aqui</a>.</p>
+
+      <!-- Botão de login do Google -->
+      <div class="g-signin2" data-onsuccess="onSignIn" data-clientid="SEU_CLIENT_ID_DO_GOOGLE"></div>
+    </div>
+
+    <!-- Script para inicializar o Google Sign-In -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var id_token = googleUser.getAuthResponse().id_token;
+            var username = profile.getName();
+            var email = profile.getEmail();
+
+            // Aqui você pode enviar os dados para o servidor para realizar o login
+            // Você pode usar uma requisição AJAX ou um formulário oculto para enviar os dados para o servidor
+            // Exemplo de envio com AJAX:
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/login_google",
+            //     data: { username: username, email: email, id_token: id_token },
+            //     success: function(response) {
+            //         // Tratar a resposta do servidor, como redirecionar para uma página de perfil
+            //     }
+            // });
+        }
+    </script>
+</body>
+</html>
